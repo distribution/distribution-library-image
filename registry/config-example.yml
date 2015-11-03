@@ -4,8 +4,15 @@ log:
     service: registry
 storage:
     cache:
-        layerinfo: inmemory
+        blobdescriptor: inmemory
     filesystem:
         rootdirectory: /var/lib/registry
 http:
     addr: :5000
+    headers:
+        X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
