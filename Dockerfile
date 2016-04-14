@@ -11,5 +11,5 @@ COPY ./registry/config-example.yml /etc/docker/registry/config.yml
 
 VOLUME ["/var/lib/registry"]
 EXPOSE 5000
-ENTRYPOINT ["/bin/registry"]
-CMD ["serve", "/etc/docker/registry/config.yml"]
+ENTRYPOINT ["/bin/registry", "serve"]
+CMD ["/etc/docker/registry/config.yml"]
