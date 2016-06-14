@@ -1,10 +1,9 @@
 # Build a minimal distribution container
 
-FROM debian:jessie
+FROM alpine:3.4
 
-RUN apt-get update && \
-    apt-get install -y ca-certificates librados2 apache2-utils && \
-    rm -rf /var/lib/apt/lists/*
+RUN set -ex \
+    && apk add --no-cache ca-certificates apache2-utils
 
 COPY ./registry/registry /bin/registry
 COPY ./registry/config-example.yml /etc/docker/registry/config.yml
