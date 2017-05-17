@@ -1,5 +1,5 @@
 # escape=`
-FROM microsoft/nanoserver:10.0.14393.693
+FROM microsoft/nanoserver:10.0.14393.1198
 
 WORKDIR C:\registry
 COPY ./registry/registry.exe registry.exe
