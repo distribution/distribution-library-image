@@ -1,6 +1,6 @@
 # Build a minimal distribution container
 
-FROM aarch64/alpine:3.4
+FROM aarch64/alpine:3.5
 
 RUN set -ex \
     && apk add --no-cache ca-certificates apache2-utils
