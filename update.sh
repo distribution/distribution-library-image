@@ -3,32 +3,29 @@
 set -e
 
 if [ $# -eq 0 ] ; then
-	echo "Usage: ./update.sh <docker/distribution tag or branch>"
+	echo "Usage: ./update.sh <docker/distribution major.minor>"
 	exit
 fi
 
 VERSION=$1
 
 # cd to the current directory so the script can be run from anywhere.
-cd `dirname $0`
+cd "$(dirname "$0")/$VERSION"
 
-echo "Fetching and building distribution $VERSION..."
+echo "Updating distribution $VERSION..."
 
-# Create a temporary directory.
-TEMP=`mktemp -d /$TMPDIR/distribution.XXXXXX`
+FULL_VERSION="$(
+	git ls-remote https://github.com/docker/distribution.git 'refs/tags/v*' \
+		| cut -d/ -f3 \
+		| cut -d^ -f1 \
+		| cut -dv -f2- \
+		| sort --unique --version-sort \
+		| grep -E "^$VERSION[.]" \
+		| tail -n1
+)"
 
-git clone -b $VERSION https://github.com/docker/distribution.git $TEMP
-docker build -t distribution-builder $TEMP
+echo "Full version: $FULL_VERSION"
 
-# Create a dummy distribution-build container so we can run a cp against it.
-ID=$(docker create distribution-builder)
-
-# Update the local binary and config.
-docker cp $ID:/go/bin/registry registry
-docker cp $ID:/go/src/github.com/docker/distribution/cmd/registry/config-example.yml registry
-
-# Cleanup.
-docker rm -f $ID
-docker rmi distribution-builder
+sed -ri -e "s/^(ENV REGISTRY_VERSION) .*/\1 $FULL_VERSION/" Dockerfile
 
 echo "Done."
