@@ -29,8 +29,7 @@ docker build --build-arg GOARCH=$GOARCH --build-arg GOARM=$GOARM -t distribution
 ID=$(docker create distribution-builder-$GOARCH)
 
 # Update the local binary and config.
-docker cp $ID:/go/bin/registry $GOARCH
-docker cp $ID:/go/src/github.com/docker/distribution/cmd/registry/config-example.yml $GOARCH
+docker cp $ID:/bin/registry $GOARCH
 
 # Cleanup.
 docker rm -f $ID
