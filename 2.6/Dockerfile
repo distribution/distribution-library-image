@@ -7,7 +7,7 @@ FROM golang:${GO_VERSION}-alpine3.11 AS build
 ENV DISTRIBUTION_DIR ${GOPATH}/src/github.com/docker/distribution
 ENV BUILDTAGS include_oss include_gcs
 
-ARG REGISTRY_VERSION=v2.7.1
+ARG REGISTRY_VERSION=v2.6.2
 ENV REGISTRY_VERSION=${REGISTRY_VERSION}
 
 RUN apk add --no-cache git make file \
