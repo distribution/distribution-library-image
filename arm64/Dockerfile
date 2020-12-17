@@ -1,9 +1,9 @@
 # Build a minimal distribution container
 
-FROM alpine:3.8
+FROM alpine:3.11
 
 RUN set -ex \
-    && apk add --no-cache ca-certificates apache2-utils
+    && apk add --no-cache ca-certificates
 
 COPY ./registry /bin/registry
 COPY ./config-example.yml /etc/docker/registry/config.yml
