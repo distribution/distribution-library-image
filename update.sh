@@ -38,4 +38,20 @@ docker rmi distribution-builder-$GOARCH
 cp Dockerfile.noarch $GOARCH/Dockerfile
 cp docker-entrypoint.sh config-example.yml $GOARCH
 
+echo "Building Windows binary"
+
+docker build --build-arg GOOS=windows -t distribution-builder:windows $TEMP
+
+ID=$(docker create distribution-builder:windows)
+
+docker cp $ID:/go/bin/registry windows/nanoserver/registry/registry.exe
+cp registry/config-example.yml windows/nanoserver/registry
+sed -i.bak 's_/var/lib/registry_c:\\data_' windows/nanoserver/registry/config-example.yml
+
+cp windows/nanoserver/registry/ windows/windowsservercore/registry/
+
+# Cleanup.
+docker rm -f $ID
+docker rmi distribution-builder:windows
+
 echo "Done."
