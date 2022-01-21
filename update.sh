@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+: "${ARCHS=amd64,armv6,armv7,arm64,ppc64le,s390x}"
 
 set -e
 
@@ -9,33 +11,31 @@ fi
 
 VERSION=$1
 
-if [ "$GOARCH" == "" ] ; then
-	echo "Must set GOARCH in environment"
-	exit
-fi
+for arch in ${ARCHS//,/ }; do
+  echo "Generating distribution dockerfile $VERSION ($arch)..."
+  mkdir -p "$arch"
+  cp docker-entrypoint.sh config-example.yml $arch
+  cat > "$arch/Dockerfile" <<EOF
+FROM alpine:3.14 AS download
+RUN apk add --no-cache tar wget
+WORKDIR /out
+RUN wget -qO- https://github.com/distribution/distribution/releases/download/${VERSION}/registry_${VERSION##v}_linux_${arch}.tar.gz | tar -zxvf - registry
 
-# cd to the current directory so the script can be run from anywhere.
-cd `dirname $0`
+FROM alpine:3.14
 
-echo "Fetching and building distribution $VERSION..."
+RUN set -ex && apk add --no-cache ca-certificates
 
-# Create a temporary directory.
-TEMP=`mktemp -d --tmpdir distribution.XXXXXX`
+COPY --from=download /out/registry /bin/registry
+COPY ./config-example.yml /etc/docker/registry/config.yml
 
-git clone -b $VERSION https://github.com/distribution/distribution.git $TEMP
-docker build --build-arg GOARCH=$GOARCH --build-arg GOARM=$GOARM -t distribution-builder-$GOARCH $TEMP
+VOLUME ["/var/lib/registry"]
+EXPOSE 5000
 
-# Create a dummy distribution-build container so we can run a cp against it.
-ID=$(docker create distribution-builder-$GOARCH)
+COPY docker-entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
-# Update the local binary and config.
-docker cp $ID:/bin/registry $GOARCH
-
-# Cleanup.
-docker rm -f $ID
-docker rmi distribution-builder-$GOARCH
-
-cp Dockerfile.noarch $GOARCH/Dockerfile
-cp docker-entrypoint.sh config-example.yml $GOARCH
+CMD ["/etc/docker/registry/config.yml"]
+EOF
+done
 
 echo "Done."
