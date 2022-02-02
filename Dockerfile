@@ -1,6 +1,12 @@
 FROM alpine:3.15
-
 RUN apk add --no-cache ca-certificates
+VOLUME ["/var/lib/registry"]
+EXPOSE 5000
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/etc/docker/registry/config.yml"]
+
+COPY ./config-example.yml /etc/docker/registry/config.yml
+COPY ./docker-entrypoint.sh /entrypoint.sh
 
 RUN set -eux; \
 # https://github.com/distribution/distribution/releases
@@ -20,13 +26,3 @@ RUN set -eux; \
 	tar --extract --verbose --file registry.tar.gz --directory /bin/ registry; \
 	rm registry.tar.gz; \
 	registry --version
-
-COPY ./config-example.yml /etc/docker/registry/config.yml
-
-VOLUME ["/var/lib/registry"]
-EXPOSE 5000
-
-COPY docker-entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["/etc/docker/registry/config.yml"]
