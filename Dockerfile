@@ -1,5 +1,8 @@
 FROM alpine:3.19
 
+LABEL org.opencontainers.image.source="https://github.com/distribution/distribution-library-image"
+LABEL org.opencontainers.image.description="A simple container image for running a local container registry"
+
 RUN apk add --no-cache ca-certificates
 
 RUN set -eux; \
