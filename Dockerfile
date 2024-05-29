@@ -21,12 +21,12 @@ RUN set -eux; \
 	rm registry.tar.gz; \
 	registry --version
 
-COPY ./config-example.yml /etc/docker/registry/config.yml
+COPY ./config-example.yml /etc/distribution/config.yml
 
 VOLUME ["/var/lib/registry"]
 EXPOSE 5000
 
-COPY docker-entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["/etc/docker/registry/config.yml"]
+CMD ["/etc/distribution/config.yml"]
