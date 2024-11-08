@@ -4,15 +4,16 @@ RUN apk add --no-cache ca-certificates
 
 RUN set -eux; \
 # https://github.com/distribution/distribution/releases
-	version='3.0.0-beta.1'; \
+	version='3.0.0-rc.1'; \
 	apkArch="$(apk --print-arch)"; \
 	case "$apkArch" in \
-		x86_64)  arch='amd64';   sha256='96344f15da3ddbef8cf300f9642d03a2b0a7aaa0b593dfe89a9ad266c5aa4ff4' ;; \
-		aarch64) arch='arm64';   sha256='62e3e0c168f62ac274672446a3f6ea89ebdfedc6630e4b02d93900b7022dbe88' ;; \
-		armhf)   arch='armv6';   sha256='01a5373d1e05bf539a1ddf5892c3bfa7377bbc02b340f6260eb7a3c62da99897' ;; \
-		armv7)   arch='armv7';   sha256='fb3748b3108950ba3a0b2868f4cd2317ab308d7436944bdcd3ac62f734b68eb5' ;; \
-		ppc64le) arch='ppc64le'; sha256='eccd060cf2d0d801fad27994d09aa43c945629cff7664f5d27bee9698b58f2a6' ;; \
-		s390x)   arch='s390x';   sha256='b4c415a28c9d58453455068542e92b94b080dbbbc6e990f2360098a64756c71d' ;; \
+		x86_64)  arch='amd64';   sha256='ca7a81752601dcfbc6e6c00fb5b87fd117ac35553e3025b40033e03945077bb0' ;; \
+		aarch64) arch='arm64';   sha256='47b45df09919e89091c7e9225b92b75b41fe6bdf5767793a26de011c046f88e3' ;; \
+		armhf)   arch='armv6';   sha256='6cbf67de5f0e2927f0a4e0863bbc88f8831aaf94348c2f930a411aebcb6ca694' ;; \
+		armv7)   arch='armv7';   sha256='4819de376733af19427ce4f5b0944db195f0e5f8bfd93e46e6c5784ad50d53b6' ;; \
+		ppc64le) arch='ppc64le'; sha256='3289e9012133947f28a85c29f667755f6ad63856dd3b8891aa5a46443813a3f7' ;; \
+		s390x)   arch='s390x';   sha256='2d0026e09fec4b0bd4dafddf6ab1b22c6ea19ab49c866ec0ec8dd8fe12f6ef21' ;; \
+                riscv64) arch='riscv64'; sha256='32ae070e57596dab3b23dd48877069792a70fe13e9b429c498cfee6b56be860a' ;; \
 		*) echo >&2 "error: unsupported architecture: $apkArch"; exit 1 ;; \
 	esac; \
 	wget -O registry.tar.gz "https://github.com/distribution/distribution/releases/download/v${version}/registry_${version}_linux_${arch}.tar.gz"; \
