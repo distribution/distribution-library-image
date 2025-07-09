@@ -24,6 +24,8 @@ RUN set -eux; \
 
 COPY ./config-example.yml /etc/distribution/config.yml
 
+ENV OTEL_TRACES_EXPORTER=none
+
 VOLUME ["/var/lib/registry"]
 EXPOSE 5000
 
